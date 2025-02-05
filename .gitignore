@@ -1,0 +1,10 @@
+# Ignore les fichiers et dossiers générés
+node_modules/
+__pycache__/
+.env
+.DS_Store
+*.log
+.vscode/
+dist/
+venv/
+v

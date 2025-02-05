@@ -1,0 +1,30 @@
+services:
+  codegen:
+    build:
+      context: ./codegen
+      dockerfile: Dockerfile
+    container_name: codegen_frontend  # 🔹 Nom explicite pour le conteneur
+    image: codegen_frontend_image  # 🔹 Nom de l'image en minuscule
+    ports:
+      - "3000:3000"  # 🔹 Expose le frontend sur localhost:3000
+    volumes:
+      - ./codegen:/app  # 🔹 Monte le dossier pour développement en direct
+    command: ["npm", "run", "watch"]
+    depends_on:
+      - codegen_api  # 🔹 Assure que le backend démarre avant le frontend
+    restart: always  # 🔹 Redémarre en cas de crash
+
+  codegen_api:
+    build:
+      context: ./codegenApi
+      dockerfile: Dockerfile
+    container_name: codegen_backend  # 🔹 Nom explicite pour le conteneur
+    image: codegen_backend_image  # 🔹 Nom de l'image en minuscule
+    ports:
+      - "8000:8000"  # 🔹 Expose FastAPI sur localhost:8000
+    volumes:
+      - ./codegenApi:/app
+    env_file:
+      - ./codegenApi/.env  # 🔹 Chargement des variables d'environnement
+    command: ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    restart: always  # 🔹 Redémarre en cas de crash
